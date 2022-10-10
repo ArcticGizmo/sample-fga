@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router';
 
 import HomePage from '@/pages/HomePage.vue';
+import TuplesPage from '@/pages/TuplesPage.vue';
 
 const routes = [
   {
@@ -16,6 +17,14 @@ const routes = [
     component: HomePage,
     meta: {
       icon: 'house'
+    }
+  },
+  {
+    path: '/tuples',
+    name: 'Tuples',
+    component: TuplesPage,
+    meta: {
+      icon: 'code'
     }
   }
 ];
