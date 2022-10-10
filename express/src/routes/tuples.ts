@@ -21,25 +21,13 @@ interface CheckReq {
   authorization_model_id?: string;
 }
 
-interface FindUserReq {
-  object: string;
-  relation: string;
-}
-
-interface FindObjectReq {
-  user: string;
-  relation: string;
-}
-
-interface FindRelationReq {
-  user: string;
-  object: string;
+interface FindReq extends Tuple {
+  continuation_token?: string;
 }
 
 type Req<P> = Request<{}, {}, P>;
 
 router.post('/check', async (req: Req<CheckReq>, res: Response) => {
-  console.dir(req.body);
   const { tuple, ...opts } = req.body;
 
   if (!tuple.user || !tuple.object || !tuple.relation) {
@@ -55,16 +43,15 @@ router.post('/check', async (req: Req<CheckReq>, res: Response) => {
   }
 });
 
-router.post('/find-users', async (req: Req<FindUserReq>, res: Response) => {
-  res.sendStatus(200);
-});
+router.post('/find', async (req: Req<FindReq>, res: Response) => {
+  const { user, relation, object, ...rest } = req.body;
 
-router.post('/find-objects', async (req: Req<FindObjectReq>, res: Response) => {
-  res.sendStatus(200);
-});
-
-router.post('/find-relations', async (req: Req<FindRelationReq>, res: Response) => {
-  res.sendStatus(200);
+  try {
+    const resp = await FGA.find({ user, relation, object }, rest);
+    res.json(resp);
+  } catch (error) {
+    res.status(error.statusCode).json(error.responseData);
+  }
 });
 
 router.post('/related', async (req: Request, res: Response) => {

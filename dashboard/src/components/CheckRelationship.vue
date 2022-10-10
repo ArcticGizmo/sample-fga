@@ -1,17 +1,18 @@
 <template>
-  <div class="check-component">
+  <div class="check-relationship">
+    <h3>Check Relationship</h3>
     <table>
       <tr>
         <th>User</th>
-        <td><input type="text" v-model="user" @input="onClearAllowed()" /></td>
+        <td><input type="text" v-model="user" @input="onClearResult()" /></td>
       </tr>
       <tr>
         <th>Object</th>
-        <td><input type="text" v-model="object" placeholder="entity:id" @input="onClearAllowed()" /></td>
+        <td><input type="text" v-model="object" placeholder="entity:id" @input="onClearResult()" /></td>
       </tr>
       <tr>
         <th>Relation</th>
-        <td><input type="text" v-model="relation" @input="onClearAllowed()" /></td>
+        <td><input type="text" v-model="relation" @input="onClearResult()" /></td>
       </tr>
       <tr>
         <th>Allowed</th>
@@ -37,13 +38,13 @@ const allowed = ref<boolean>();
 
 const toast = useToast();
 
-const onClearAllowed = () => (allowed.value = undefined);
+const onClearResult = () => (allowed.value = undefined);
 
 const onReset = () => {
   user.value = '';
   object.value = '';
   relation.value = '';
-  allowed.value = undefined;
+  onClearResult();
 };
 
 const onCheck = async () => {
@@ -57,7 +58,7 @@ const onCheck = async () => {
     return;
   }
 
-  allowed.value = undefined;
+  onClearResult();
 
   try {
     allowed.value = await Http.check({
@@ -77,8 +78,8 @@ const onCheck = async () => {
 </script>
 
 <style scoped>
-.check-component {
-  max-width: 300px;
+.check-relationship {
+  max-width: 350px;
   padding: 0.5rem;
   border: 1px solid gray;
   box-shadow: 1px 1px 3px;

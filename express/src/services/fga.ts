@@ -12,6 +12,13 @@ export interface GetModelsOpts {
   continuationToken?: string;
 }
 
+type FindReqTuple =
+  | { object: string }
+  | { user: string; object: string }
+  | { user: string; type: string }
+  | { object: string; relation: string }
+  | { user: string; object: string; relation: string };
+
 export type CheckOpts = Omit<CheckRequest, 'tuple_key'>;
 export type ReadRequestOpts = Omit<ReadRequest, 'tuple_key'>;
 
@@ -40,20 +47,31 @@ class FgaClient {
     return resp.allowed;
   }
 
-  async find(tuple: TupleKey, opts?: ReadRequest) {
+  async find(tuple: FindReqTuple, opts?: ReadRequest) {
     return this._api.read({ ...opts, tuple_key: tuple });
   }
 
-  async findUsers(relation: string, object: string, opts?: ReadRequestOpts) {
-    return this.find({ relation, object }, opts);
+  async getTuplesForObject(object: string) {
+    return this.find({ object });
   }
 
-  async findObjects(user: string, relation: string, opts?: ReadRequestOpts) {
-    return this.find({ user, relation }, opts);
+  async getTuplesWithType(user: string, type: string, relation: string) {
+    return this.find({ user, object: `${type}:`, relation });
   }
 
-  async findRelations(user: string, object: string, opts?: ReadRequestOpts) {
-    return this.find({ user, object }, opts);
+  // get a list of relations for a user+object pair
+  async getRelations(user: string, object: string) {
+    return this.find({ user, object }).then(resp => resp.tuples.map(t => t.key.relation));
+  }
+
+  // get a list of relations for a user+type pair
+  async getRelationsWithType(user: string, type: string) {
+    return this.getRelations(user, `${type}:`);
+  }
+
+  // get all users for an object+relation pair
+  async getUsers(object: string, relation: string) {
+    return this.find({ object, relation }).then(resp => resp.tuples.map(t => t.key.user));
   }
 }
 

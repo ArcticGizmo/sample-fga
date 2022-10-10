@@ -1,10 +1,18 @@
 <template>
   <div class="tuples-page">
-    <CheckComponent />
-    
+    <CheckRelationship />
+
+    <FindRelationShips />
   </div>
 </template>
 
 <script setup lang="ts">
-import CheckComponent from '@/components/CheckComponent.vue';
+import CheckRelationship from '@/components/CheckRelationship.vue';
+import FindRelationShips from '@/components/FindRelationships.vue';
 </script>
+
+<style scoped>
+div > * {
+  margin-bottom: 1rem;
+}
+</style>
