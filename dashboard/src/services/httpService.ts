@@ -41,7 +41,7 @@ class HttpService {
     return this._w('tuples/check').post({ tuple }).json();
   }
 
-  async find(tuple: FindReqTuple, continuation_token: string) {
+  async find(tuple: FindReqTuple, continuation_token?: string) {
     return this._find({ object: tuple.type, ...tuple }, continuation_token);
   }
 
